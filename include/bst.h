@@ -9,67 +9,77 @@
 
 template <typename T>
 class BST {
-private:
+ private:
     struct Node {
-        T data;
+        T val;
         int freq;
-        Node* left;
-        Node* right;
-        explicit Node(const T& v) : data(v), freq(1), left(nullptr), right(nullptr) {}
+        Node* lft;
+        Node* rgt;
+        explicit Node(const T& v) : val(v), freq(1), lft(nullptr), rgt(nullptr) {}
     };
     Node* root;
 
-    Node* put(Node* n, const T& v) {
+    Node* addNode(Node* n, const T& v) {
         if (!n) return new Node(v);
-        if (v < n->data) n->left = put(n->left, v);
-        else if (v > n->data) n->right = put(n->right, v);
+        if (v < n->val) n->lft = addNode(n->lft, v);
+        else if (v > n->val) n->rgt = addNode(n->rgt, v);
         else n->freq++;
         return n;
     }
 
-    int depth(Node* n) const {
+    int getDepthRec(Node* n) const {
         if (!n) return -1;
-        int dl = depth(n->left);
-        int dr = depth(n->right);
+        int dl = getDepthRec(n->lft);
+        int dr = getDepthRec(n->rgt);
         return 1 + (dl > dr ? dl : dr);
     }
 
-    Node* get(Node* n, const T& v) const {
-        if (!n || n->data == v) return n;
-        if (v < n->data) return get(n->left, v);
-        return get(n->right, v);
+    Node* searchRec(Node* n, const T& v) const {
+        if (!n || n->val == v) return n;
+        if (v < n->val) return searchRec(n->lft, v);
+        return searchRec(n->rgt, v);
     }
 
-    void scan(Node* n, std::vector<std::pair<T, int>>& out) const {
+    void collectInOrder(Node* n, std::vector<std::pair<T, int>>& out) const {
         if (!n) return;
-        scan(n->left, out);
-        out.push_back({ n->data, n->freq });
-        scan(n->right, out);
+        collectInOrder(n->lft, out);
+        out.push_back({n->val, n->freq});
+        collectInOrder(n->rgt, out);
     }
 
-    void erase(Node* n) {
+    void eraseTree(Node* n) {
         if (!n) return;
-        erase(n->left);
-        erase(n->right);
+        eraseTree(n->lft);
+        eraseTree(n->rgt);
         delete n;
     }
 
-public:
+ public:
     BST() : root(nullptr) {}
-    ~BST() { erase(root); }
+    ~BST() { eraseTree(root); }
 
-    void insert(const T& v) { root = put(root, v); }
-    int height() const { return depth(root); }
-    int count(const T& v) const {
-        Node* n = get(root, v);
+    void insert(const T& key) {
+        root = addNode(root, key);
+    }
+
+    int depth() const {
+        return getDepthRec(root);
+    }
+
+    int search(const T& value) const {
+        Node* n = searchRec(root, value);
         return n ? n->freq : 0;
     }
-    std::vector<std::pair<T, int>> entries() const {
+
+    std::vector<std::pair<T, int>> getAllSortedByKey() const {
         std::vector<std::pair<T, int>> res;
-        scan(root, res);
+        collectInOrder(root, res);
         return res;
     }
-    bool empty() const { return root == nullptr; }
+
+    bool empty() const {
+        return root == nullptr;
+    }
 };
 
-#endif
+#endif  // INCLUDE_BST_H_
