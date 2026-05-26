@@ -41,9 +41,9 @@ void printFreq(BST<std::string>& tree) {
     for (const auto& p : vec) {
         std::cout << p.first << " : " << p.second << "\n";
     }
-    std::ofstream out("resultfreq.txt");
+    std::ofstream out("result_freq.txt");
     if (!out) {
-        std::cout << "Cannot open resultfreq.txt for writing!" << std::endl;
+        std::cout << "Cannot open result_freq.txt for writing!" << std::endl;
         return;
     }
     for (const auto& p : vec) {
