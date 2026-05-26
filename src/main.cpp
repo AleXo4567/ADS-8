@@ -7,11 +7,11 @@ void makeTree(BST<std::string>& tree, const char* filename);
 void printFreq(BST<std::string>& tree);
 
 int main() {
-    BST<std::string> tree;
-    makeTree(tree, "src/war_peace.txt");
-    std::cout << "Tree depth: " << tree.height() << std::endl;
+    BST<std::string> myTree;
+    makeTree(myTree, "src/war_peace.txt");
+    std::cout << "Tree depth: " << myTree.depth() << std::endl;
     std::cout << "\nWord frequencies (descending):\n";
     std::cout << "--------------------------------\n";
-    printFreq(tree);
+    printFreq(myTree);
     return 0;
 }
